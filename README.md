@@ -1,6 +1,6 @@
 # Disconnect 24 Installer
 
-### By TheMrIron2 and Adrian
+### By TheMrIron2 and KuraiKokoro
 
 
 The DC24 Installer app will patch nwc24msg.cfg and the necessary IOSes on the Wii itself to make Disconnect24 install smoothly and easily.
