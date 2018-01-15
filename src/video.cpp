@@ -1,7 +1,7 @@
 /****************************************************************************
  * libwiigui Template
  * Tantric 2009
- * Modified by TheMrIron2 2018
+ *
  * video.cpp
  * Video routines
  ***************************************************************************/
@@ -117,7 +117,7 @@ InitVideo ()
 
 	VIDEO_Configure (vmode);
 
-	screenheight = 480; // in future, make this 240 with 480i for better memory use
+	screenheight = 480;
 	screenwidth = vmode->fbWidth;
 
 	// Allocate the video buffers
@@ -157,7 +157,7 @@ InitVideo ()
 /****************************************************************************
  * StopGX
  *
- * Stops GX (when exiting) and flush the GPU
+ * Stops GX (when exiting)
  ***************************************************************************/
 void StopGX()
 {
