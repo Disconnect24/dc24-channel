@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<app version="1">
+  <name>Disconnect24</name>
+  <coder>TheMrIron2, Spotlight</coder>
+  <version>1.0.0</version>
+  <release_date>20181501</release_date>
+  <short_description>DC24 Channel</short_description>
+  <long_description>The Disconnect24 channel allows users to check for updates, install Disconnect24 and see the latest announcements all in one app.</long_description>
+  <no_ios_reload/>
+</app>
