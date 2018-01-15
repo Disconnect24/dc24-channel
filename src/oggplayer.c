@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2008 Francisco Muñoz 'Hermes' <www.elotrolado.net>
+ Copyright (c) 2008 Francisco MuÃ±oz 'Hermes' <www.elotrolado.net>
  All rights reserved.
  
  Proper (standard) vorbis usage by Tantric, 2009
@@ -462,7 +462,7 @@ int PlayOgg(const void *buffer, s32 len, int time_pos, int mode)
 	
 	private_ogg.mode = mode;
 	private_ogg.eof = 0;
-	private_ogg.volume = 127;
+	private_ogg.volume = 100;
 	private_ogg.flag = 0;
 	private_ogg.seek_time = -1;
 
