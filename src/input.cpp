@@ -1,4 +1,10 @@
-// Code nearly directly taken from libwiigui, comments modified for ease of reading
+/****************************************************************************
+ * libwiigui Template
+ * Tantric 2009
+ *
+ * input.cpp
+ * Wii/GameCube controller management
+ ***************************************************************************/
 
 #include <gccore.h>
 #include <stdio.h>
@@ -18,8 +24,11 @@ int rumbleRequest[4] = {0,0,0,0};
 GuiTrigger userInput[4];
 static int rumbleCount[4] = {0,0,0,0};
 
-// Scans pad and wpad
-
+/****************************************************************************
+ * UpdatePads
+ *
+ * Scans pad and wpad
+ ***************************************************************************/
 void UpdatePads()
 {
 	WPAD_ScanPads();
@@ -39,7 +48,31 @@ void UpdatePads()
 	}
 }
 
-// Disable rumble
+/****************************************************************************
+ * SetupPads
+ *
+ * Sets up userInput triggers for use
+ ***************************************************************************/
+void SetupPads()
+{
+	PAD_Init();
+	WPAD_Init();
+
+	// read wiimote accelerometer and IR data
+	WPAD_SetDataFormat(WPAD_CHAN_ALL,WPAD_FMT_BTNS_ACC_IR);
+	WPAD_SetVRes(WPAD_CHAN_ALL, screenwidth, screenheight);
+
+	for(int i=0; i < 4; i++)
+	{
+		userInput[i].chan = i;
+		userInput[i].wpad = WPAD_Data(i);
+	}
+}
+
+/****************************************************************************
+ * ShutoffRumble
+ ***************************************************************************/
+
 void ShutoffRumble()
 {
 	for(int i=0;i<4;i++)
@@ -48,6 +81,10 @@ void ShutoffRumble()
 		rumbleCount[i] = 0;
 	}
 }
+
+/****************************************************************************
+ * DoRumble
+ ***************************************************************************/
 
 void DoRumble(int i)
 {

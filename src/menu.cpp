@@ -16,7 +16,7 @@
 
 #include "libwiigui/gui.h"
 #include "menu.h"
-#include “dc24.h”
+#include "demo.h"
 #include "input.h"
 #include "filelist.h"
 #include "filebrowser.h"
@@ -418,7 +418,7 @@ static int MenuSettings()
 {
 	int menu = MENU_NONE;
 
-	GuiText titleTxt(“Disconnect24 Channel“, 28, (GXColor){255, 255, 255, 255});
+	GuiText titleTxt("Settings", 28, (GXColor){255, 255, 255, 255});
 	titleTxt.SetAlignment(ALIGN_LEFT, ALIGN_TOP);
 	titleTxt.SetPosition(50,50);
 
@@ -433,21 +433,21 @@ static int MenuSettings()
 	GuiTrigger trigHome;
 	trigHome.SetButtonOnlyTrigger(-1, WPAD_BUTTON_HOME | WPAD_CLASSIC_BUTTON_HOME, 0);
 
-	GuiText updateBtnTxt(“Updates”, 22, (GXColor){0, 0, 0, 255});
-	updateBtnTxt.SetWrap(true, btnLargeOutline.GetWidth()-30);
-	GuiImage updateBtnImg(&btnLargeOutline);
-	GuiImage updateBtnImgOver(&btnLargeOutlineOver);
-	GuiButton updateBtn(btnLargeOutline.GetWidth(), btnLargeOutline.GetHeight());
-	updateBtn.SetAlignment(ALIGN_LEFT, ALIGN_TOP);
-	updateBtn.SetPosition(50, 120);
-	updateBtn.SetLabel(&updateBtnTxt);
-	updateBtn.SetImage(&updateBtnImg);
-	updateBtn.SetImageOver(&updateBtnImgOver);
-	updateBtn.SetSoundOver(&btnSoundOver);
-	updateBtn.SetTrigger(&trigA);
-	updateBtn.SetEffectGrow();
+	GuiText fileBtnTxt("File Browser", 22, (GXColor){0, 0, 0, 255});
+	fileBtnTxt.SetWrap(true, btnLargeOutline.GetWidth()-30);
+	GuiImage fileBtnImg(&btnLargeOutline);
+	GuiImage fileBtnImgOver(&btnLargeOutlineOver);
+	GuiButton fileBtn(btnLargeOutline.GetWidth(), btnLargeOutline.GetHeight());
+	fileBtn.SetAlignment(ALIGN_LEFT, ALIGN_TOP);
+	fileBtn.SetPosition(50, 120);
+	fileBtn.SetLabel(&fileBtnTxt);
+	fileBtn.SetImage(&fileBtnImg);
+	fileBtn.SetImageOver(&fileBtnImgOver);
+	fileBtn.SetSoundOver(&btnSoundOver);
+	fileBtn.SetTrigger(&trigA);
+	fileBtn.SetEffectGrow();
 
-	GuiText videoBtnTxt("Videos”, 22, (GXColor){0, 0, 0, 255});
+	GuiText videoBtnTxt("Video", 22, (GXColor){0, 0, 0, 255});
 	videoBtnTxt.SetWrap(true, btnLargeOutline.GetWidth()-30);
 	GuiImage videoBtnImg(&btnLargeOutline);
 	GuiImage videoBtnImgOver(&btnLargeOutlineOver);
@@ -461,22 +461,24 @@ static int MenuSettings()
 	videoBtn.SetTrigger(&trigA);
 	videoBtn.SetEffectGrow();
 
-	GuiText installBtnTxt(“Install”, 22, (GXColor){0, 0, 0, 255});
-	installBtnTxt1.SetPosition(0, -20);
-	installBtnTxt3.SetPosition(0, +20);
-	GuiImage installBtnImg(&btnLargeOutline);
-	GuiImage installBtnImgOver(&btnLargeOutlineOver);
-	GuiButton installBtn(btnLargeOutline.GetWidth(), btnLargeOutline.GetHeight());
-	installBtn.SetAlignment(ALIGN_RIGHT, ALIGN_TOP);
-	installBtn.SetPosition(-50, 120);
-	installBtn.SetLabel(&installBtnTxt1, 0);
-	installBtn.SetLabel(&installBtnTxt2, 1);
-	installBtn.SetLabel(&installBtnTxt3, 2);
-	installBtn.SetImage(&installBtnImg);
-	installBtn.SetImageOver(&installBtnImgOver);
-	installBtn.SetSoundOver(&btnSoundOver);
-	installBtn.SetTrigger(&trigA);
-	installBtn.SetEffectGrow();
+	GuiText savingBtnTxt1("Saving", 22, (GXColor){0, 0, 0, 255});
+	GuiText savingBtnTxt2("&", 18, (GXColor){0, 0, 0, 255});
+	GuiText savingBtnTxt3("Loading", 22, (GXColor){0, 0, 0, 255});
+	savingBtnTxt1.SetPosition(0, -20);
+	savingBtnTxt3.SetPosition(0, +20);
+	GuiImage savingBtnImg(&btnLargeOutline);
+	GuiImage savingBtnImgOver(&btnLargeOutlineOver);
+	GuiButton savingBtn(btnLargeOutline.GetWidth(), btnLargeOutline.GetHeight());
+	savingBtn.SetAlignment(ALIGN_RIGHT, ALIGN_TOP);
+	savingBtn.SetPosition(-50, 120);
+	savingBtn.SetLabel(&savingBtnTxt1, 0);
+	savingBtn.SetLabel(&savingBtnTxt2, 1);
+	savingBtn.SetLabel(&savingBtnTxt3, 2);
+	savingBtn.SetImage(&savingBtnImg);
+	savingBtn.SetImageOver(&savingBtnImgOver);
+	savingBtn.SetSoundOver(&btnSoundOver);
+	savingBtn.SetTrigger(&trigA);
+	savingBtn.SetEffectGrow();
 
 	GuiText menuBtnTxt("Menu", 22, (GXColor){0, 0, 0, 255});
 	menuBtnTxt.SetWrap(true, btnLargeOutline.GetWidth()-30);
@@ -536,9 +538,9 @@ static int MenuSettings()
 	HaltGui();
 	GuiWindow w(screenwidth, screenheight);
 	w.Append(&titleTxt);
-	w.Append(&updateBtn);
+	w.Append(&fileBtn);
 	w.Append(&videoBtn);
-	w.Append(&installBtn);
+	w.Append(&savingBtn);
 	w.Append(&menuBtn);
 
 #ifdef HW_RVL
@@ -556,7 +558,7 @@ static int MenuSettings()
 	{
 		usleep(THREAD_SLEEP);
 
-		if(updateBtn.GetState() == STATE_CLICKED)
+		if(fileBtn.GetState() == STATE_CLICKED)
 		{
 			menu = MENU_BROWSE_DEVICE;
 		}
@@ -564,7 +566,7 @@ static int MenuSettings()
 		{
 			menu = MENU_SETTINGS_FILE;
 		}
-		else if(installBtn.GetState() == STATE_CLICKED)
+		else if(savingBtn.GetState() == STATE_CLICKED)
 		{
 			menu = MENU_SETTINGS_FILE;
 		}
@@ -621,7 +623,7 @@ static int MenuSettingsFile()
 	sprintf(options.name[i++], "Auto Save");
 	options.length = i;
 
-	GuiText titleTxt("Settings - Install”, 28, (GXColor){255, 255, 255, 255});
+	GuiText titleTxt("Settings - Saving & Loading", 28, (GXColor){255, 255, 255, 255});
 	titleTxt.SetAlignment(ALIGN_LEFT, ALIGN_TOP);
 	titleTxt.SetPosition(50,50);
 

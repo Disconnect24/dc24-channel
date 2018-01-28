@@ -17,7 +17,7 @@
 #include "input.h"
 #include "libwiigui/gui.h"
 
-#define DEFAULT_FIFO_SIZE 256 * 1024 //todo; experiment with the first value here - I've seen 1024x1024 FIFO values
+#define DEFAULT_FIFO_SIZE 256 * 1024
 static unsigned int *xfb[2] = { NULL, NULL }; // Double buffered
 static int whichfb = 0; // Switch
 static GXRModeObj *vmode; // Menu video mode
@@ -95,7 +95,7 @@ ResetVideo_Menu()
 
 	GX_SetViewport(0,0,vmode->fbWidth,vmode->efbHeight,0,1);
 	GX_SetBlendMode(GX_BM_BLEND, GX_BL_SRCALPHA, GX_BL_INVSRCALPHA, GX_LO_CLEAR);
-	GX_SetAlphaUpdate(GX_TRUE); // Ok why is alpha on for a 2D GUI
+	GX_SetAlphaUpdate(GX_TRUE);
 }
 
 /****************************************************************************
@@ -118,7 +118,7 @@ InitVideo ()
 	VIDEO_Configure (vmode);
 
 	screenheight = 480;
-	screenwidth = vmode->fbWidth; // Likely 640; may debug + upgrade to 720 after memory optimisation
+	screenwidth = vmode->fbWidth;
 
 	// Allocate the video buffers
 	xfb[0] = (u32 *) SYS_AllocateFramebuffer (vmode);
@@ -148,7 +148,7 @@ InitVideo ()
 	GX_Init (&gp_fifo, DEFAULT_FIFO_SIZE);
 	GX_SetCopyClear (background, 0x00ffffff);
 	GX_SetDispCopyGamma (GX_GM_1_0);
-	GX_SetCullMode (GX_CULL_NONE); // Wow Sherlock Holmes well said
+	GX_SetCullMode (GX_CULL_NONE);
 	
 	ResetVideo_Menu();
 	// Finally, the video is up and ready for use :)
@@ -176,7 +176,7 @@ void StopGX()
 void Menu_Render()
 {
 	whichfb ^= 1; // flip framebuffer
-	GX_SetZMode(GX_TRUE, GX_LEQUAL, GX_TRUE); // What the fuck?
+	GX_SetZMode(GX_TRUE, GX_LEQUAL, GX_TRUE);
 	GX_SetColorUpdate(GX_TRUE);
 	GX_CopyDisp(xfb[whichfb],GX_TRUE);
 	GX_DrawDone();
@@ -186,9 +186,6 @@ void Menu_Render()
 	FrameTimer++;
 }
 
-// Ok going on record here; why the living fuck is ZMode enabled here
-// You don't even need a Z-buffer here you dumb apes
-// ...but I don't have devkitppc r24 set up so I'm afraid to test it disabled
 /****************************************************************************
  * Menu_DrawImg
  *
