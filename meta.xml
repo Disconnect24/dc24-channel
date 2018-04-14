@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<app version="1">
+  <name>WiiTest</name>
+  <coder>Kuruyia</coder>
+  <version>1.0</version>
+  <release_date>20171209133700</release_date>
+  <short_description>Wii Test app</short_description>
+  <long_description>Wii Test app</long_description>
+  <ahb_access/>
+  <no_ios_reload/>
+</app>
