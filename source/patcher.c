@@ -1,4 +1,5 @@
 #include "patcher.h"
+#include "config.h"
 #include "nand.h"
 #include "network.h"
 #include "network/picohttpparser.h"
@@ -83,13 +84,13 @@ s32 getSystemMenuIOS(const s32 systemMenuVersion) {
 
 void patchNWC24MSG(unionNWC24MSG* unionFile, char passwd[0x20], char mlchkid[0x24]) {
     // Patch mail domain
-    strcpy(unionFile->structNWC24MSG.mailDomain, "@rc24.xyz");
+    strcpy(unionFile->structNWC24MSG.mailDomain, BASE_MAIL_URL);
 
     // Patch the URLs
     const char engines[0x5][0x80] = { "account", "check", "receive", "delete", "send" };
     for (int i = 0; i < 5; i++) {
         char formattedLink[0x80] = "";
-        sprintf(formattedLink, "http://mtw.rc24.xyz/cgi-bin/%s.cgi", engines[i]);
+        sprintf(formattedLink, "http://%s/cgi-bin/%s.cgi", BASE_HTTP_URL, engines[i]);
 
         strcpy(unionFile->structNWC24MSG.urls[i], formattedLink);
     }
@@ -137,8 +138,8 @@ s32 patchMail() {
 
     // Request for a passwd/mlchkid
     char response[2048] = "";
-    sprintf(response, "wiiNum=%lli", fc);
-    error = postRequest("wii-patch.rc24.xyz", "/mail.php", 443, &response, sizeof(response));
+    sprintf(response, "mlid=w%16lli", fc);
+    error = postRequest(BASE_HTTP_URL, "/cgi-bin/patcher.cgi", 80, &response, sizeof(response));
     if (error < 0) {
         printf("Couldn't request the data: %li\n", error);
         return error;
@@ -172,24 +173,38 @@ s32 patchMail() {
     }
 
     // Check the response code
-    if (responseCode == RESPONSE_INVALID) {
-        printf("Invalid Friend Code\n");
-    } else if (responseCode == RESPONSE_AREGISTERED) {
+    switch (responseCode) {
+    case RESPONSE_INVALID:
+        printf("Invalid friend code\n");
+        break;
+    case RESPONSE_AREGISTERED:
         printf("Already registered\n");
-    } else if (responseCode == RESPONSE_NOTINIT || strcmp(responseMlchkid, "") == 0 ||
-               strcmp(responsePasswd, "") == 0) {
-        printf("Incomplete data\n");
-    }
+        break;
+    case RESPONSE_DB_ERROR:
+        printf("Server database error.");
+        break;
+    case RESPONSE_OK:
+        if (strcmp(responseMlchkid, "") == 0 || strcmp(responsePasswd, "") == 0) {
+            // If it's empty, nothing we can do.
+        } else {
+            // Patch the nwc24msg.cfg file
+            printf("before:%s\n", fileUnionNWC24MSG.structNWC24MSG.mailDomain);
+            patchNWC24MSG(&fileUnionNWC24MSG, responsePasswd, responseMlchkid);
+            printf("after:%s\n", fileUnionNWC24MSG.structNWC24MSG.mailDomain);
 
-    // Patch the nwc24msg.cfg file
-    printf("before:%s\n", fileUnionNWC24MSG.structNWC24MSG.mailDomain);
-    patchNWC24MSG(&fileUnionNWC24MSG, responsePasswd, responseMlchkid);
-    printf("after:%s\n", fileUnionNWC24MSG.structNWC24MSG.mailDomain);
+            error = NAND_WriteFile("/shared2/wc24/nwc24msg.cfg", fileUnionNWC24MSG.charNWC24MSG, 0x400, false);
+            if (error < 0) {
+                printf("The nwc24msg.cfg file couldn't be updated.\n");
+                return error;
+            }
 
-    error = NAND_WriteFile("/shared2/wc24/nwc24msg.cfg", fileUnionNWC24MSG.charNWC24MSG, 0x400, false);
-    if (error < 0) {
-        printf("The nwc24msg.cfg file couldn't be updated\n");
-        return error;
+            break;
+        }
+    default:
+        printf("Incomplete data. Check if the server is up.\nFeel free to send a developer the "
+               "following content: \n%s\n",
+               response);
+        break;
     }
 
     return 0;

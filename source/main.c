@@ -167,11 +167,9 @@ int main(int argc, char** argv) {
         }
 
         patchMail();
-        patchContentMap();
-        patchIOSHash();
     }
 
-    printf("Finished !\n");
+    printf("Finished!\n");
 
     while (1) {
         WPAD_ScanPads();
