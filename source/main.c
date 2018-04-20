@@ -169,7 +169,7 @@ int main(int argc, char** argv) {
         patchMail();
     }
 
-    printf("Finished!\n");
+    printf("Finished!\nPress HOME to exit.\n");
 
     while (1) {
         WPAD_ScanPads();

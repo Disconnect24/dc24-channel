@@ -26,13 +26,12 @@ s32 doRequest(const void* hostname, const void* path, const u16 port, void* buff
 
     char response[length];
     memset(response, 0, length);
-    char request[256] = "";
+    char request[300] = "";
     sprintf(request, "%s %s HTTP/1.1\r\n\
 User-Agent: WiiPatcher/1.0 (Nintendo Wii)\r\n\
 Host: %s\r\n\
 Content-Type: application/x-www-form-urlencoded\r\n\
 Content-Length: %i\r\n\
-Accept */*\r\n\
 Cache-Control: no-cache\r\n\r\n%s",
             requestType, (char*)path, (char*)hostname, strlen(buffer), (char*)buffer);
 
