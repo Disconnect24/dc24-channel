@@ -155,7 +155,7 @@ int main(int argc, char** argv) {
     // for (int i = 0; i < sizeof(tst); i++)
     //   printf("%.2x", tst[i]);
 
-    printf("\n\n\n\n\n");
+    printf("\n\nRunning...\n\n\n\n\n");
 
     s32 systemVersion = getSystemMenuVersion();
 

@@ -148,7 +148,7 @@ s32 patchMail() {
 
     // Request for a passwd/mlchkid
     char response[2048] = "";
-    sprintf(response, "mlid=w%16lli", fc);
+    sprintf(response, "mlid=w%016lli", fc);
     error = postRequest(BASE_HTTP_URL, "/cgi-bin/patcher.cgi", 80, &response, sizeof(response));
     if (error < 0) {
         printf("Couldn't request the data: %li\n", error);
