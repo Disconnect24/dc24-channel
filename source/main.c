@@ -164,15 +164,15 @@ int main(int argc, char** argv) {
         "Your System Menu is outdated.\nPlease update to the latest version of the Wii system.");
     } else {
         if (systemVersion >= 256 && systemVersion < 512) {
-            printf("RiiConnect24 works best on 4.3 (if you update, please repatch!)\nThe "
+            printf("Disconnect24 works best on 4.3 (if you update, please repatch!)\nThe "
                    "installer will continue.\n");
         }
 
         s32 error = patchMail();
         if (error == RESPONSE_AREGISTERED) {
-          printf("If your previous registration failed, please\ncontact a developer at support@riiconnect24.net.\n");
+          printf("If your previous registration failed, please\ncontact a developer at support@disconnect24.xyz.\n");
         } else if (error != 0) {
-          printf("An error occurred! Please send a screenshot of this error message\nto a developer or at support@riiconnect24.net.\n");
+          printf("An error occurred! Please send a screenshot of this error message\nto a developer or at support@disconnect24.net.\n");
         } else {
           printf("Finished!\nPress HOME to exit.\n");
         }
