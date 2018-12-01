@@ -118,11 +118,11 @@ s32 patchMail() {
         return error;
     }
 
-    s32 copyingError = NAND_WriteFile("/shared2/wc24/nwc24msg.cbk", fileBufferNWC24MSG, 0x400, false);
-    if (copyingError < 0) {
-        printf("The nwc24msg.cfg file couldn't be backed up.\n");
-        return copyingError;
-    }
+    // s32 copyingError = NAND_WriteFile("/shared2/wc24/nwc24msg.cbk", fileBufferNWC24MSG, 0x400, false);
+    // if (copyingError < 0) {
+    //     printf("The nwc24msg.cfg file couldn't be backed up.\n");
+    //     return copyingError;
+    // }
     memcpy(&fileUnionNWC24MSG, fileBufferNWC24MSG, 0x400);
 
     // Separate the file magic and checksum
