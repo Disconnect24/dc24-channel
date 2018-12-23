@@ -151,7 +151,7 @@ s32 patchMail() {
     sprintf(response, "mlid=w%016lli", fc);
     error = postRequest(BASE_HTTP_URL, "/cgi-bin/patcher.cgi", 80, &response, sizeof(response));
     if (error < 0) {
-        printf("Couldn't request the data: %li\n", error);
+        printf("Couldn't request the data: %i\n", error);
         return error;
     }
 
