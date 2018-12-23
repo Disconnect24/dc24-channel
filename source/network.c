@@ -16,7 +16,7 @@ s32 doRequest(const void* hostname, const void* path, const u16 port, void* buff
     }
 
     struct sockaddr_in sin;
-    s32 sock = net_socket(AF_INET, SOCK_STREAM, 0);
+    s32 sock = net_socket (AF_INET, SOCK_STREAM, IPPROTO_IP);
 
     memcpy(&sin.sin_addr.s_addr, dns->h_addr, dns->h_length);
     sin.sin_family = AF_INET;
