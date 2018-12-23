@@ -1,5 +1,4 @@
 #include <gccore.h>
-#include <network.h>
 #include <stdio.h>
 #include <wiiuse/wpad.h>
 
