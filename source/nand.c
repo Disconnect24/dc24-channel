@@ -74,7 +74,7 @@ bool NAND_IsFilePresent(const char* filePath) {
     s32 file = ISFS_Open(filePath, ISFS_OPEN_READ);
 
     if (file < 0) return false;
-    } else {
+    else {
         ISFS_Close(file);
         return true;
     }

@@ -130,6 +130,7 @@ Cache-Control: no-cache\r\n\r\n%s",
     if (strcmp(requestType, "GET") == 0) {
         const char* body = &msg[ret];
         memcpy(buffer, body, length);
+    }
     else if (strcmp(requestType, "POST") == 0) memcpy(buffer, response + ret, length);
 
     net_close(sock);
@@ -145,8 +146,7 @@ s32 postRequest(const void* hostname, const void* path, const u16 port, void* bu
 }
 
 bool initNetwork() {
-    for (int i = 0; i < 50 && !ok; i++) {
-        if (net_init() >= 0) return true;
-        else return false;
-    }
+    bool ok;
+    for (int i = 0; i < 50 && !ok; i++) if (net_init() >= 0) ok = true;
+    return ok;
 }
