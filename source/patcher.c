@@ -31,7 +31,7 @@ s64 getFriendCode() {
 }
 
 s32 getSystemMenuVersion() {
-    // Get the system menu tmd
+    // Get the System menu TMD
     s32 systemMenuVersion;
     u32 tmdSize;
     s32 error = __ES_Init();
@@ -58,28 +58,17 @@ s32 getSystemMenuVersion() {
 s32 getSystemMenuIOS(const s32 systemMenuVersion) {
     const s32 smv = systemMenuVersion;
 
-    if (smv == 33)
-        return 9;
-    else if (smv == 128 || smv == 97 || smv == 130 || smv == 162)
-        return 11;
-    else if (smv >= 192 && smv <= 194)
-        return 20;
-    else if ((smv >= 224 && smv <= 290) || (smv >= 352 && smv <= 354))
-        return 30;
-    else if (smv == 326)
-        return 40;
-    else if (smv >= 384 && smv <= 386)
-        return 50;
-    else if (smv == 390)
-        return 52;
-    else if (smv >= 416 && smv <= 454)
-        return 60;
-    else if (smv >= 480 && smv <= 486)
-        return 70;
-    else if (smv >= 512 && smv <= 518)
-        return 80;
-
-    return -1;
+    if (smv == 33) return 9;
+    else if (smv == 128 || smv == 97 || smv == 130 || smv == 162) return 11;
+    else if (smv >= 192 && smv <= 194) return 20;
+    else if ((smv >= 224 && smv <= 290) || (smv >= 352 && smv <= 354)) return 30;
+    else if (smv == 326) return 40;
+    else if (smv >= 384 && smv <= 386) return 50;
+    else if (smv == 390) return 52;
+    else if (smv >= 416 && smv <= 454) return 60;
+    else if (smv >= 480 && smv <= 486) return 70;
+    else if (smv >= 512 && smv <= 518) return 80;
+    else return -1;
 }
 
 void patchNWC24MSG(unionNWC24MSG* unionFile, char passwd[0x20], char mlchkid[0x24]) {
@@ -118,11 +107,6 @@ s32 patchMail() {
         return error;
     }
 
-    // s32 copyingError = NAND_WriteFile("/shared2/wc24/nwc24msg.cbk", fileBufferNWC24MSG, 0x400, false);
-    // if (copyingError < 0) {
-    //     printf("The nwc24msg.cfg file couldn't be backed up.\n");
-    //     return copyingError;
-    // }
     memcpy(&fileUnionNWC24MSG, fileBufferNWC24MSG, 0x400);
 
     // Separate the file magic and checksum
@@ -174,53 +158,47 @@ s32 patchMail() {
         currentHeaderValue = malloc((int)headers[i].value_len);
         sprintf(currentHeaderValue, "%.*s", (int)headers[i].value_len, headers[i].value);
 
-        if (strcmp(currentHeaderName, "cd") == 0)
-            responseCode = atoi(currentHeaderValue);
-        else if (strcmp(currentHeaderName, "mlchkid") == 0)
-            memcpy(&responseMlchkid, currentHeaderValue, 0x24);
-        else if (strcmp(currentHeaderName, "passwd") == 0)
-            memcpy(&responsePasswd, currentHeaderValue, 0x20);
+        if (strcmp(currentHeaderName, "cd") == 0) responseCode = atoi(currentHeaderValue);
+        else if (strcmp(currentHeaderName, "mlchkid") == 0) memcpy(&responseMlchkid, currentHeaderValue, 0x24);
+        else if (strcmp(currentHeaderName, "passwd") == 0) memcpy(&responsePasswd, currentHeaderValue, 0x20);
     }
 
     // Check the response code
     switch (responseCode) {
-    case RESPONSE_INVALID:
-        printf("Invalid friend code\n");
-        return 1;
-        break;
-    case RESPONSE_AREGISTERED:
-        printf("Already registered\n");
-        return RESPONSE_AREGISTERED;
-        break;
-    case RESPONSE_DB_ERROR:
-        printf("Server database error.");
-        return 1;
-        break;
-    case RESPONSE_OK:
-        if (strcmp(responseMlchkid, "") == 0 || strcmp(responsePasswd, "") == 0) {
-            // If it's empty, nothing we can do.
+        case RESPONSE_INVALID:
+            printf("Invalid friend code\n");
             return 1;
-        } else {
-            // Patch the nwc24msg.cfg file
-            printf("before:%s\n", fileUnionNWC24MSG.structNWC24MSG.mailDomain);
-            patchNWC24MSG(&fileUnionNWC24MSG, responsePasswd, responseMlchkid);
-            printf("after:%s\n", fileUnionNWC24MSG.structNWC24MSG.mailDomain);
+            break;
+        case RESPONSE_AREGISTERED:
+            printf("Already registered\n");
+            return RESPONSE_AREGISTERED;
+            break;
+         case RESPONSE_DB_ERROR:
+            printf("Server database error.");
+            return 1;
+            break;
+        case RESPONSE_OK:
+            if (strcmp(responseMlchkid, "") == 0 || strcmp(responsePasswd, "") == 0) /* If it's empty, nothing we can do. */ return 1;
+            else {
+                // Patch the nwc24msg.cfg file
+                printf("before:%s\n", fileUnionNWC24MSG.structNWC24MSG.mailDomain);
+                patchNWC24MSG(&fileUnionNWC24MSG, responsePasswd, responseMlchkid);
+                printf("after:%s\n", fileUnionNWC24MSG.structNWC24MSG.mailDomain);
 
-            error = NAND_WriteFile("/shared2/wc24/nwc24msg.cfg", fileUnionNWC24MSG.charNWC24MSG, 0x400, false);
-            if (error < 0) {
-                printf("The nwc24msg.cfg file couldn't be updated.\n");
-                return error;
+                error = NAND_WriteFile("/shared2/wc24/nwc24msg.cfg", fileUnionNWC24MSG.charNWC24MSG, 0x400, false);
+                if (error < 0) {
+                    printf("The nwc24msg.cfg file couldn't be updated.\n");
+                    return error;
+                }
+                return 0;
+                break;
             }
-            return 0;
+        default:
+            printf("Incomplete data. Check if the server is up.\nFeel free to send a developer the "
+                   "following content: \n%s\n",
+                 response);
+            return 1;
             break;
         }
-    default:
-        printf("Incomplete data. Check if the server is up.\nFeel free to send a developer the "
-               "following content: \n%s\n",
-               response);
-        return 1;
-        break;
-    }
-
     return 0;
 }

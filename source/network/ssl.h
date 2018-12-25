@@ -11,7 +11,7 @@
 
 #ifdef __cplusplus
    extern "C" {
-#endif /* __cplusplus */
+#endif
 
 u32 ssl_init(void);
 u32 ssl_open(void);
@@ -27,4 +27,4 @@ s32 ssl_shutdown( s32 ssl_context);
 
 #ifdef __cplusplus
    }
-#endif /* __cplusplus */
+#endif

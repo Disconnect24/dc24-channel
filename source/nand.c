@@ -6,11 +6,8 @@ static bool isNANDInitialised = false;
 s32 NAND_Init() {
     s32 error = ISFS_Initialize();
 
-    if (error >= 0) {
-        isNANDInitialised = true;
-    } else {
-        return error;
-    }
+    if (error >= 0) isNANDInitialised = true;
+    else return error;
 
     return 0;
 }
@@ -18,11 +15,8 @@ s32 NAND_Init() {
 s32 NAND_Exit() {
     s32 error = ISFS_Deinitialize();
 
-    if (error >= 0) {
-        isNANDInitialised = false;
-    } else {
-        return error;
-    }
+    if (error >= 0) isNANDInitialised = false;
+    else return error;
 
     return 0;
 }
@@ -55,11 +49,8 @@ s32 NAND_WriteFile(const char* filePath, const void* buffer, u32 bufferLength, b
     if (!isNANDInitialised) return -1;
 
     if (!NAND_IsFilePresent(filePath)) {
-        if (!createFile) {
-            return -1;
-        } else {
-            ISFS_CreateFile(filePath, 0, 3, 3, 3);
-        }
+        if (!createFile) return -1;
+        else ISFS_CreateFile(filePath, 0, 3, 3, 3);
     }
 
     s32 file = ISFS_Open(filePath, ISFS_OPEN_WRITE);
@@ -82,8 +73,7 @@ bool NAND_IsFilePresent(const char* filePath) {
 
     s32 file = ISFS_Open(filePath, ISFS_OPEN_READ);
 
-    if (file < 0) {
-        return false;
+    if (file < 0) return false;
     } else {
         ISFS_Close(file);
         return true;

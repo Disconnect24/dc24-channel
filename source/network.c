@@ -115,8 +115,7 @@ Cache-Control: no-cache\r\n\r\n%s",
     size_t num_headers;
 
     num_headers = sizeof(headers) / sizeof(headers[0]);
-    int ret = phr_parse_response(response, strlen(response), &minor_version, &status, &msg,
-                                 &msg_len, headers, &num_headers, 0);
+    int ret = phr_parse_response(response, strlen(response), &minor_version, &status, &msg, &msg_len, headers, &num_headers, 0);
     if (ret < 0) {
         printf("phr_parse_response: error %i\n", ret);
         net_close(sock);
@@ -131,12 +130,9 @@ Cache-Control: no-cache\r\n\r\n%s",
     if (strcmp(requestType, "GET") == 0) {
         const char* body = &msg[ret];
         memcpy(buffer, body, length);
-    } else if (strcmp(requestType, "POST") == 0) {
-        memcpy(buffer, response + ret, length);
-    }
+    else if (strcmp(requestType, "POST") == 0) memcpy(buffer, response + ret, length);
 
     net_close(sock);
-
     return 0;
 }
 
@@ -149,10 +145,8 @@ s32 postRequest(const void* hostname, const void* path, const u16 port, void* bu
 }
 
 bool initNetwork() {
-    bool ok = false;
-
-    for (int i = 0; i < 50 && !ok; i++)
-        if (net_init() >= 0) ok = true;
-
-    return ok;
+    for (int i = 0; i < 50 && !ok; i++) {
+        if (net_init() >= 0) return true;
+        else return false;
+    }
 }
