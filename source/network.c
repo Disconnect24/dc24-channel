@@ -146,7 +146,7 @@ s32 postRequest(const void* hostname, const void* path, const u16 port, void* bu
 }
 
 bool initNetwork() {
-    bool ok;
+    bool ok = false;
     for (int i = 0; i < 50 && !ok; i++) if (net_init() >= 0) ok = true;
     return ok;
 }
